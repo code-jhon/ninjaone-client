@@ -8,6 +8,7 @@ interface DeviceContextType {
   devices: Device[];
   dispatch: React.Dispatch<Action>;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  setFilterType: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 // Define the available actions for the reducer
@@ -37,12 +38,14 @@ const DeviceContext = createContext<DeviceContextType>({
   devices: [],
   dispatch: () => undefined,
   setSearchTerm: () => undefined,
+  setFilterType: () => undefined
 });
 
 // Create the device provider component
 const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [devices, dispatch] = useReducer(reducer, initialState);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState<string[]>([]);
   const [filteredDevices, setFilteredDevices] = useState(devices);
 
   useEffect(() => {
@@ -64,13 +67,14 @@ const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
   useEffect(() => {
     setFilteredDevices(
       devices.filter(device =>
-        device.system_name.toLowerCase().includes(searchTerm.toLowerCase())
+        device.system_name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (filterType.length > 0 ? filterType.includes(device.type) : true)
       )
     );
-  }, [devices, searchTerm]);
+  }, [devices, searchTerm, filterType]);
 
   return (
-    <DeviceContext.Provider value={{ devices: filteredDevices, dispatch, setSearchTerm }}>
+    <DeviceContext.Provider value={{ devices: filteredDevices, dispatch, setSearchTerm, setFilterType }}>
       {children}
     </DeviceContext.Provider>
   );
