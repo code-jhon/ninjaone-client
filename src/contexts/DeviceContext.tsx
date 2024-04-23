@@ -1,9 +1,14 @@
-import React, { createContext, useReducer, useEffect } from 'react';
+import React, { createContext, useReducer, useEffect, useState } from 'react';
 import { fetchDevices } from '../services/DeviceService';
 import { Device } from '../interfaces';
 
 // Define the initial state
 const initialState: Device[] = [];
+interface DeviceContextType {
+  devices: Device[];
+  dispatch: React.Dispatch<Action>;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+}
 
 // Define the available actions for the reducer
 type Action =
@@ -28,17 +33,17 @@ const reducer = (state: Device[], action: Action): Device[] => {
 };
 
 // Create the device context
-const DeviceContext = createContext<{
-  devices: Device[];
-  dispatch: React.Dispatch<Action>;
-}>({
-  devices: initialState,
+const DeviceContext = createContext<DeviceContextType>({
+  devices: [],
   dispatch: () => undefined,
+  setSearchTerm: () => undefined,
 });
 
 // Create the device provider component
 const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [devices, dispatch] = useReducer(reducer, initialState);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredDevices, setFilteredDevices] = useState(devices);
 
   useEffect(() => {
     const loadDevices = async () => {
@@ -52,12 +57,20 @@ const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
         console.error(error);
       }
     };
-    devices.length === 0 &&
-      void loadDevices().then(() => console.log('Devices loaded'));
+    
+    void loadDevices().then(() => console.log('Devices loaded'));
   }, []);
 
+  useEffect(() => {
+    setFilteredDevices(
+      devices.filter(device =>
+        device.system_name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [devices, searchTerm]);
+
   return (
-    <DeviceContext.Provider value={{ devices, dispatch }}>
+    <DeviceContext.Provider value={{ devices: filteredDevices, dispatch, setSearchTerm }}>
       {children}
     </DeviceContext.Provider>
   );
