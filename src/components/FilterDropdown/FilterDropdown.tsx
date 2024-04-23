@@ -130,7 +130,7 @@ const FilterDropdown: React.FC = () => {
       {isOpen && (
         <DropdownContent>
           <CheckboxLabel>
-            <CheckboxInput type="checkbox" name="all" onChange={handleCheckboxChange} />
+            <CheckboxInput type="checkbox" name="all" checked={checkedTypes.length === 3} onChange={handleCheckboxChange} />
             <CheckBoxText>All</CheckBoxText>
           </CheckboxLabel>
           <CheckboxLabel>
