@@ -12,11 +12,17 @@ const DropdownContainer = styled.div`
   border-radius: 4px;
   width: 155px;
   height: 38px;
+  cursor: pointer;
 `;
 
 const DropdownButton = styled.div`
   display: flex;
   align-items: center;
+
+  &:hover .caret-icon{
+    transform: rotate(180deg);
+    transition: transform 0.3s;
+  }
 `;
 
 const ButtonText = styled.div`
@@ -76,7 +82,7 @@ const CheckboxInput = styled.input`
 const FilterDropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { setFilterType } = useContext(DeviceContext);
-  const [checkedTypes, setCheckedTypes] = useState<string[]>([]);
+  const [checkedTypes, setCheckedTypes] = useState<string[]>(['WINDOWS', 'MAC', 'LINUX']);
 
 
   const toggleDropdown = () => {
@@ -118,7 +124,7 @@ const FilterDropdown: React.FC = () => {
       <DropdownButton onClick={toggleDropdown}>
         <ButtonText>Device type: {filterStatus}</ButtonText>
         <ImageContainer>
-          <img src={Caret} alt="dropdown icon" />
+          <img src={Caret} alt="dropdown icon" className='caret-icon' />
         </ImageContainer>
       </DropdownButton>
       {isOpen && (
