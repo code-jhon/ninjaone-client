@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import DeviceCard from '../DeviceCard';
 import { DeviceContext } from '../../contexts/DeviceContext';
 import { Device } from '../../interfaces/';
@@ -26,28 +26,51 @@ const Title = styled.span`
 
 const DeviceList: React.FC = () => {
   const { devices, isModalOpen, setIsModalOpen, dispatch } = useContext(DeviceContext);
-  
+  const [device, setDevice] = useState<Device>({
+    id: '',
+    system_name: '',
+    type: '',
+    hdd_capacity: '',
+  });
+
+  const onEdit = (device: Device) => {
+    setDevice(device);
+    setIsModalOpen(true);
+  }
+
   const deviceCards = devices.map((device: Device, index: number) => (
     <DeviceCard
       key={index}
+      id={device.id}
       title={device.system_name}
       icon={device.type}
       osDesc={device.type}
       hddSize={device.hdd_capacity.toString()}
+      onEdit={onEdit}
     />
   ));
 
   const onClose = () => {
     setIsModalOpen(false);
+    setDevice({
+      id: '',
+      system_name: '',
+      type: '',
+      hdd_capacity: '',
+    });
   };
 
   const onSubmit = (device: Device) => {
     dispatch({ type: 'POST_DEVICE', device: device });
   };
 
+  const onEditDevice = (id: string, device: Device) => {
+    dispatch({ type: 'UPDATE_DEVICE', id, device });
+  };
+
   return (
     <DeviceListContainer>
-      <ModalForm open={isModalOpen} onClose={onClose} onSubmit={onSubmit} />
+      <ModalForm open={isModalOpen} onClose={onClose} onSubmit={onSubmit} onEdit={onEditDevice} device={device} />
       <TitleContainer>
         <Title>Device</Title>
       </TitleContainer>

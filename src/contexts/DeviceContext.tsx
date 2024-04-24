@@ -87,7 +87,7 @@ const DeviceContext = createContext<DeviceContextType>({
   setSortOption: () => undefined,
   resetFilters: () => undefined,
   isModalOpen: false,
-  setIsModalOpen: () => undefined
+  setIsModalOpen: () => undefined,
 });
 
 // Create the device provider component
@@ -97,7 +97,7 @@ const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const [filterType, setFilterType] = useState<string[]>(['WINDOWS', 'MAC', 'LINUX']);
   const [sortOption, setSortOption] = useState<{ key: 'hdd_capacity' | 'system_name'; order: 'asc' | 'desc' } | null>(null);
   const [filteredDevices, setFilteredDevices] = useState(state.devices);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const loadDevices = async () => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { OptionsMenu } from '../OptionsMenu';
 import { DeviceCardProps } from '../../interfaces';
 import { Apple, Windows, Linux } from '../../assets/osIcons/';
 import styled from 'styled-components';
@@ -9,11 +10,17 @@ const DeviceCardContainer = styled.div`
   padding: 9px 12px 8px;
   height: 52px;
   gap: 4px;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
 
   &:hover {
     background: var(--Black-Black-5, #F4F4F5);
   }
+`;
+
+const DeviceCardInfo = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const DeviceCardHeader = styled.div`
@@ -45,12 +52,13 @@ const OsDesc = styled.p`
 `;
 
 const DeviceCard: React.FC<DeviceCardProps> = ({
+  id,
   title,
   icon,
   osDesc,
   hddSize,
+  onEdit,
 }) => {
-  
 
   const osIcons: { [key: string]: string } = {
     WINDOWS: Windows,
@@ -60,17 +68,24 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
 
   const osDescCapitalized: string = osDesc.charAt(0).toUpperCase() + osDesc.slice(1).toLowerCase();
 
+  const handleEdit = () => {
+    onEdit({ id, system_name: title, type: icon, hdd_capacity: hddSize });
+  }
+
   return (
     <DeviceCardContainer >
-      <DeviceCardHeader >
-        <DeviceIcon src={osIcons[icon]} alt="Device Icon" />
-        <DeviceTitle>{title}</DeviceTitle>
-      </DeviceCardHeader>
-      <div>
-        <OsDesc>
-          {osDescCapitalized} workstation - {hddSize} GB
-        </OsDesc>
-      </div>
+      <DeviceCardInfo>
+        <DeviceCardHeader >
+          <DeviceIcon src={osIcons[icon]} alt="Device Icon" />
+          <DeviceTitle>{title}</DeviceTitle>
+        </DeviceCardHeader>
+        <div>
+          <OsDesc>
+            {osDescCapitalized} workstation - {hddSize} GB
+          </OsDesc>
+        </div>
+      </DeviceCardInfo>
+      <OptionsMenu handleEdit={handleEdit} />
     </DeviceCardContainer>
   );
 };
