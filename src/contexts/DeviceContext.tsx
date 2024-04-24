@@ -9,6 +9,7 @@ interface DeviceContextType {
   dispatch: React.Dispatch<Action>;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   setFilterType: React.Dispatch<React.SetStateAction<string[]>>;
+  setSortOption: React.Dispatch<React.SetStateAction<{ key: 'hdd_capacity' | 'system_name'; order: 'asc' | 'desc' } | null>>;
 }
 
 // Define the available actions for the reducer
@@ -38,7 +39,8 @@ const DeviceContext = createContext<DeviceContextType>({
   devices: [],
   dispatch: () => undefined,
   setSearchTerm: () => undefined,
-  setFilterType: () => undefined
+  setFilterType: () => undefined,
+  setSortOption: () => undefined,
 });
 
 // Create the device provider component
@@ -46,6 +48,7 @@ const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const [devices, dispatch] = useReducer(reducer, initialState);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<string[]>([]);
+  const [sortOption, setSortOption] = useState<{ key: 'hdd_capacity' | 'system_name'; order: 'asc' | 'desc' } | null>(null);
   const [filteredDevices, setFilteredDevices] = useState(devices);
 
   useEffect(() => {
@@ -65,16 +68,30 @@ const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
   }, []);
 
   useEffect(() => {
-    setFilteredDevices(
-      devices.filter(device =>
-        device.system_name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (filterType.length > 0 ? filterType.includes(device.type) : true)
-      )
+    const result = devices.filter(device =>
+      device.system_name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (filterType.length > 0 ? filterType.includes(device.type) : true)
     );
-  }, [devices, searchTerm, filterType]);
+
+    if (sortOption) {
+      result.sort((a, b) => {
+        if (sortOption.key === 'hdd_capacity') {
+          const aValue = Number(a.hdd_capacity);
+          const bValue = Number(b.hdd_capacity);
+          return sortOption.order === 'asc' ? aValue - bValue : bValue - aValue;
+        } else {
+          return sortOption.order === 'asc'
+            ? a.system_name.localeCompare(b.system_name)
+            : b.system_name.localeCompare(a.system_name);
+        }
+      });
+    }
+
+    setFilteredDevices(result);
+  }, [devices, searchTerm, filterType, sortOption]);
 
   return (
-    <DeviceContext.Provider value={{ devices: filteredDevices, dispatch, setSearchTerm, setFilterType }}>
+    <DeviceContext.Provider value={{ devices: filteredDevices, dispatch, setSearchTerm, setFilterType, setSortOption }}>
       {children}
     </DeviceContext.Provider>
   );
