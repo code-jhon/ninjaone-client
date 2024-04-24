@@ -35,7 +35,7 @@ To Improve:
 - [ ] Improve performance by using memoization
 - [ ] Improve quality and animations
 
-Start Date: Mon-23/2024
+Start Date: Mon-22/2024
 Finish Date: Wed-25/2024
 
 **Available Features**
