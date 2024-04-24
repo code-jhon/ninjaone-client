@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { DeviceContext } from '../../contexts/DeviceContext';
 import IconSearch from '../../assets/actionIcons/search.svg'
 import styled from 'styled-components';

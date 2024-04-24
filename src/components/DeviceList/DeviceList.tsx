@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import DeviceCard from '../DeviceCard';
 import { DeviceContext } from '../../contexts/DeviceContext';
 import { Device } from '../../interfaces/';
+import ModalForm from '../Form/';
 import styled from 'styled-components';
 
 const DeviceListContainer = styled.div`
@@ -24,7 +25,7 @@ const Title = styled.span`
 `;
 
 const DeviceList: React.FC = () => {
-  const { devices } = useContext(DeviceContext);
+  const { devices, isModalOpen, setIsModalOpen, dispatch } = useContext(DeviceContext);
   
   const deviceCards = devices.map((device: Device, index: number) => (
     <DeviceCard
@@ -32,12 +33,21 @@ const DeviceList: React.FC = () => {
       title={device.system_name}
       icon={device.type}
       osDesc={device.type}
-      hddSize={device.hdd_capacity}
+      hddSize={device.hdd_capacity.toString()}
     />
   ));
 
+  const onClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const onSubmit = (device: Device) => {
+    dispatch({ type: 'POST_DEVICE', device: device });
+  };
+
   return (
     <DeviceListContainer>
+      <ModalForm open={isModalOpen} onClose={onClose} onSubmit={onSubmit} />
       <TitleContainer>
         <Title>Device</Title>
       </TitleContainer>
