@@ -1,3 +1,4 @@
+import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import Overlay from '../Overlay';
 import close from '../../assets/actionIcons/close.svg';
@@ -145,22 +146,34 @@ interface ModalFormProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (device: Device) => void;
+  onEdit?: (id: string, device: Device) => void;
+  device?: Device;
 }
 
 export const ModalForm: React.FC<ModalFormProps> = ({
   open,
   onClose,
   onSubmit,
+  onEdit,
+  device
 }) => {
-  const initialFormData: Device = {
+  const initialFormData = useMemo(() => ({
     id: '',
     system_name: '',
     type: '',
     hdd_capacity: '',
-  };
+  }), []);
 
   const [formData, setFormData] = useState(initialFormData);
   const [isValid, setIsValid] = useState(false);
+
+  useEffect(() => {
+    if (device) {
+      setFormData(device);
+    } else {
+      setFormData(initialFormData);
+    }
+  }, [device, initialFormData]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
@@ -174,7 +187,13 @@ export const ModalForm: React.FC<ModalFormProps> = ({
     event.preventDefault();
     if(!isValid) return;
     if(isValid) {
-      onSubmit(formData);
+      if(formData.id) {
+        onEdit && onEdit(formData.id, formData as Device);
+        onClose();
+        setFormData(initialFormData);
+        return;
+      }
+      onSubmit(formData as Device);
       setFormData(initialFormData);
       onClose();
     }
@@ -196,24 +215,26 @@ export const ModalForm: React.FC<ModalFormProps> = ({
     <Overlay>
       <ModalWrapper>
         <ModalHeader>
-          <ModalTitle>Add device</ModalTitle>
+          <ModalTitle>{formData.id ? "Edit" : "Add"} device</ModalTitle>
           <Icon src={close} onClick={onClose} />
         </ModalHeader>
         <Form onSubmit={handleSubmit}>
           <FormBody>
             <FormGroup>
               <Label> System name * </Label>
+              <Input type="hidden" name="id" value={formData.id} />
               <Input
                 type="text"
                 required
                 name="system_name"
                 onChange={handleChange}
+                value={formData.system_name}
               />
             </FormGroup>
             <FormGroup>
               <Label> Device type * </Label>
-              <Select required name="type" onChange={handleChange}>
-                <option value="">Select type</option>
+              <Select value={formData.type} required name="type" onChange={handleChange}>
+                <option value="" disabled>Select type</option>
                 <option value="LINUX">Linux workstation</option>
                 <option value="MAC">Mac workstation</option>
                 <option value="WINDOWS">Windows workstation</option>
@@ -226,6 +247,7 @@ export const ModalForm: React.FC<ModalFormProps> = ({
                 required
                 name="hdd_capacity"
                 onChange={handleChange}
+                value={formData.hdd_capacity}
               />
             </FormGroup>
           </FormBody>

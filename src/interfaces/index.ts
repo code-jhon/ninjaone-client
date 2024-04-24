@@ -8,8 +8,10 @@ export interface Device {
 }
 
 export interface DeviceCardProps {
+  id: string;
   title: string;
-  icon: string;
-  osDesc: string;
+  icon: DeviceType;
+  osDesc: DeviceType;
   hddSize: string;
+  onEdit: (device: Device) => void;
 }
