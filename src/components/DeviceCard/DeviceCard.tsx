@@ -58,6 +58,7 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
   osDesc,
   hddSize,
   onEdit,
+  onDelete,
 }) => {
 
   const osIcons: { [key: string]: string } = {
@@ -70,6 +71,10 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
 
   const handleEdit = () => {
     onEdit({ id, system_name: title, type: icon, hdd_capacity: hddSize });
+  }
+
+  const handleDelete = () => {
+    onDelete({ id, system_name: title, type: icon, hdd_capacity: hddSize});
   }
 
   return (
@@ -85,7 +90,7 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
           </OsDesc>
         </div>
       </DeviceCardInfo>
-      <OptionsMenu handleEdit={handleEdit} />
+      <OptionsMenu handleEdit={handleEdit} handleDelete={handleDelete} />
     </DeviceCardContainer>
   );
 };

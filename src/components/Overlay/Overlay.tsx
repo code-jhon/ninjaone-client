@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
+import { OverlayProps } from '../../interfaces';
 import styled from 'styled-components';
 
 const OverlayContainer = styled.div`
@@ -13,10 +14,6 @@ const OverlayContainer = styled.div`
   align-items: center;
   z-index: 1000;
 `;
-
-interface OverlayProps {
-  children: ReactNode;
-}
 
 const Overlay: React.FC<OverlayProps> = ({ children }) => {
   return <OverlayContainer>{children}</OverlayContainer>;

@@ -1,12 +1,8 @@
 import React, { createContext, useReducer, useEffect, useState } from 'react';
 import { fetchDevices, createDevice } from '../services/DeviceService';
-import { Device } from '../interfaces';
+import { Device, DeviceState, DeviceContextType, Action } from '../interfaces';
 
-interface DeviceState {
-  devices: Device[];
-  device: Device;
-  isCreating: boolean;
-}
+
 
 // Define the initial state
 const initialState: DeviceState = {
@@ -19,28 +15,6 @@ const initialState: DeviceState = {
   },
   isCreating: false,
 };
-
-interface DeviceContextType {
-  devices: Device[];
-  dispatch: React.Dispatch<Action>;
-  searchTerm: string;
-  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
-  filterType: string[];
-  setFilterType: React.Dispatch<React.SetStateAction<string[]>>;
-  sortOption: { key: 'hdd_capacity' | 'system_name'; order: 'asc' | 'desc' } | null;
-  setSortOption: React.Dispatch<React.SetStateAction<{ key: 'hdd_capacity' | 'system_name'; order: 'asc' | 'desc' } | null>>;
-  resetFilters: () => void;
-  isModalOpen: boolean;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-// Define the available actions for the reducer
-type Action =
-  | { type: 'ADD_DEVICE'; device: Device }
-  | { type: 'UPDATE_DEVICE'; id: string; device: Device }
-  | { type: 'DELETE_DEVICE'; id: string }
-  | { type: 'POST_DEVICE'; device: Device }
-  | { type: 'END_POST_DEVICE' };
 
 // Define the reducer function
 const reducer = (state: DeviceState, action: Action): DeviceState => {
@@ -88,6 +62,8 @@ const DeviceContext = createContext<DeviceContextType>({
   resetFilters: () => undefined,
   isModalOpen: false,
   setIsModalOpen: () => undefined,
+  isDeleteModalOpen: false,
+  setIsDeleteModalOpen: () => undefined,
 });
 
 // Create the device provider component
@@ -98,6 +74,7 @@ const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const [sortOption, setSortOption] = useState<{ key: 'hdd_capacity' | 'system_name'; order: 'asc' | 'desc' } | null>(null);
   const [filteredDevices, setFilteredDevices] = useState(state.devices);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const loadDevices = async () => {
@@ -172,7 +149,9 @@ const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
     setSortOption,
     resetFilters,
     isModalOpen,
-    setIsModalOpen
+    setIsModalOpen,
+    isDeleteModalOpen,
+    setIsDeleteModalOpen
   }
 
   return (

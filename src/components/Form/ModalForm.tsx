@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import Overlay from '../Overlay';
 import close from '../../assets/actionIcons/close.svg';
-import { useState } from 'react';
+import { ModalFormProps } from '../../interfaces';
 import { Device } from '../../interfaces';
 
 const ModalWrapper = styled.div`
@@ -128,7 +128,7 @@ const ButtonSubmit = styled(Button)`
 const ButtonCancel = styled(Button)`
   border: 1px solid rgba(72, 68, 105, 0.25);
   background-color: #fff;
-  color: #337ab7;
+  color: #000;
 `;
 
 const FormFooter = styled.div`
@@ -141,14 +141,6 @@ const FormFooter = styled.div`
     cursor: not-allowed;
   }
 `;
-
-interface ModalFormProps {
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (device: Device) => void;
-  onEdit?: (id: string, device: Device) => void;
-  device?: Device;
-}
 
 export const ModalForm: React.FC<ModalFormProps> = ({
   open,
