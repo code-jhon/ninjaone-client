@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { DeviceContext } from '../../contexts/DeviceContext';
 import Plus from '../../assets/actionIcons/plus.svg';
 import styled from 'styled-components';
 
@@ -61,15 +62,12 @@ const ButtonContainer = styled.div`
 `;
 
 const Breadcrumbs: React.FC = () => {
-  // pending: implement the action from context
-  const handleButtonClick = () => {
-    console.log('Add device button clicked');
-  };
+  const { setIsModalOpen } = useContext(DeviceContext);
 
   return (
     <Container>
       <Text>Devices</Text>
-      <Button onClick={handleButtonClick}>
+      <Button onClick={() => setIsModalOpen(true)}>
         <ButtonContainer>
           <Icon src={Plus} alt="add device icon" /> 
           <ButtonText>Add device</ButtonText>

@@ -1,4 +1,4 @@
-export type DeviceType = 'Windows' | 'Mac' | 'Linux';
+export type DeviceType = 'WINDOWS' | 'MAC' | 'LINUX' | '';
 
 export interface Device {
   id: string;
