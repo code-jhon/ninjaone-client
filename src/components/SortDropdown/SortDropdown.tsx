@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { DeviceContext } from '../../contexts/DeviceContext';
 import Caret from '../../assets/actionIcons/caret.svg';
 import styled from 'styled-components';
@@ -13,6 +13,10 @@ const DropdownContainer = styled.div`
   width: 291px;
   height: 38px;
   cursor: pointer;
+
+  &:hover .content-container {
+    display: block;
+  }
 `;
 
 const DropdownButton = styled.div`
@@ -54,6 +58,7 @@ const ImageContainer = styled.div`
 `;
 
 const DropdownContent = styled.div`
+  display: none;
   position: absolute;
   background-color: #fff;
   min-width: 155px;
@@ -75,45 +80,43 @@ const Item = styled.div`
 `;
 
 const SortDropdown: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { sortOption, setSortOption } = useContext(DeviceContext);
   const [sortBy, setSortBy] = useState<string>('');
-  const { setSortOption } = useContext(DeviceContext);
-  
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+  useEffect(() => {
+    if (!sortOption) {
+      setSortBy('')
+    }
+  }, [sortOption, setSortOption]);
+
 
   const handleSortChange = (key: 'hdd_capacity' | 'system_name', order: 'asc' | 'desc') => {
     setSortOption({ key, order });
     setSortBy(`${key === 'hdd_capacity' ? 'HDD Capacity' : 'System Name'} (${order === 'asc' ? 'Ascending' : 'Descending'})`);
-    setIsOpen(false);
   };
 
   return (
-    <DropdownContainer>
-      <DropdownButton onClick={toggleDropdown}>
+    <DropdownContainer >
+      <DropdownButton>
         <ButtonText>Sort by: {sortBy}</ButtonText>
         <ImageContainer>
           <img src={Caret} alt="dropdown icon" className='caret-icon' />
         </ImageContainer>
       </DropdownButton>
-      {isOpen && (
-        <DropdownContent>
-          <Item onClick={() => handleSortChange('hdd_capacity', 'asc')}>
-            <ItemText>HDD Capacity (Ascending)</ItemText>
-          </Item>
-          <Item onClick={() => handleSortChange('hdd_capacity', 'desc')}>
-            <ItemText>HDD Capacity (Descending)</ItemText>
-          </Item>
-          <Item onClick={() => handleSortChange('system_name', 'asc')}>
-            <ItemText>Name (Ascending)</ItemText>
-          </Item>
-          <Item onClick={() => handleSortChange('system_name', 'desc')}>
-            <ItemText>Name (Descending)</ItemText>
-          </Item>
-        </DropdownContent>
-      )}
+      <DropdownContent className='content-container'>
+        <Item onClick={() => handleSortChange('hdd_capacity', 'asc')}>
+          <ItemText>HDD Capacity (Ascending)</ItemText>
+        </Item>
+        <Item onClick={() => handleSortChange('hdd_capacity', 'desc')}>
+          <ItemText>HDD Capacity (Descending)</ItemText>
+        </Item>
+        <Item onClick={() => handleSortChange('system_name', 'asc')}>
+          <ItemText>Name (Ascending)</ItemText>
+        </Item>
+        <Item onClick={() => handleSortChange('system_name', 'desc')}>
+          <ItemText>Name (Descending)</ItemText>
+        </Item>
+      </DropdownContent>
     </DropdownContainer>
   );
 };
