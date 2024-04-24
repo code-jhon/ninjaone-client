@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
+import { OptionsMenuProps } from '../../interfaces';
 import styled from 'styled-components';
 import Ellipsis from '../../assets/actionIcons/ellipsis.svg';
 
-interface OptionsMenuProps {
-  handleEdit: () => void;
-}
-
-const OptionsMenu: React.FC<OptionsMenuProps> = ({handleEdit}) => {
+const OptionsMenu: React.FC<OptionsMenuProps> = ({handleEdit, handleDelete}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const OptionsMenuButton = styled.button`
@@ -68,6 +65,11 @@ const OptionsMenu: React.FC<OptionsMenuProps> = ({handleEdit}) => {
     setIsOpen(false);
   }
 
+  const handleDeleteClick = () => {
+    handleDelete();
+    setIsOpen(false);
+  }
+
   return (
     <div className="options-menu">
       <OptionsMenuButton className="options-menu-button" onClick={() => setIsOpen(!isOpen)}>
@@ -75,7 +77,7 @@ const OptionsMenu: React.FC<OptionsMenuProps> = ({handleEdit}) => {
       </OptionsMenuButton>
       <DropdownMenu>
         <DropdownItem color="#211F33" onClick={handleEditClick}>Edit</DropdownItem>
-        <DropdownItem color="#D53948">Delete</DropdownItem>
+        <DropdownItem color="#D53948" onClick={handleDeleteClick}>Delete</DropdownItem>
       </DropdownMenu>
     </div>
   );
