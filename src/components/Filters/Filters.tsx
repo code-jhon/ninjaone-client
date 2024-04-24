@@ -2,6 +2,7 @@ import React from 'react';
 import { Search } from '../Search';
 import { FilterDropdown } from '../FilterDropdown';
 import { SortDropdown } from '../SortDropdown';
+import { ResetFilters } from '../ResetFilters';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -16,6 +17,7 @@ const Filters: React.FC = () => {
       <Search />
       <FilterDropdown />
       <SortDropdown />
+      <ResetFilters />
     </Container>
   );
 };

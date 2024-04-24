@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { DeviceContext } from '../../contexts/DeviceContext';
 import Caret from '../../assets/actionIcons/caret.svg';
 import styled from 'styled-components';
@@ -13,6 +13,10 @@ const DropdownContainer = styled.div`
   width: 155px;
   height: 38px;
   cursor: pointer;
+
+  &:hover .content-container {
+    display: block;
+  }
 `;
 
 const DropdownButton = styled.div`
@@ -55,6 +59,7 @@ const ImageContainer = styled.div`
 
 const DropdownContent = styled.div`
   position: absolute;
+  display: none;
   background-color: #fff;
   min-width: 155px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
@@ -81,14 +86,12 @@ const CheckboxInput = styled.input`
 `;
 
 const FilterDropdown: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { setFilterType } = useContext(DeviceContext);
-  const [checkedTypes, setCheckedTypes] = useState<string[]>(['WINDOWS', 'MAC', 'LINUX']);
+  const { filterType, setFilterType } = useContext(DeviceContext);
+  const [checkedTypes, setCheckedTypes] = useState<string[]>(filterType);
 
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+  useEffect(() => {
+    setCheckedTypes(filterType);
+  }, [filterType]);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
@@ -122,32 +125,30 @@ const FilterDropdown: React.FC = () => {
 
   return (
     <DropdownContainer>
-      <DropdownButton onClick={toggleDropdown}>
+      <DropdownButton>
         <ButtonText>Device type: {filterStatus}</ButtonText>
         <ImageContainer>
           <img src={Caret} alt="dropdown icon" className='caret-icon' />
         </ImageContainer>
       </DropdownButton>
-      {isOpen && (
-        <DropdownContent>
-          <CheckboxLabel>
-            <CheckboxInput type="checkbox" name="all" checked={checkedTypes.length === 3} onChange={handleCheckboxChange} />
-            <CheckBoxText>All</CheckBoxText>
-          </CheckboxLabel>
-          <CheckboxLabel>
-            <CheckboxInput type="checkbox" checked={isChecked.windows} name="windows" onChange={handleCheckboxChange} />
-            <CheckBoxText>Windows</CheckBoxText>
-          </CheckboxLabel>
-          <CheckboxLabel>
-            <CheckboxInput type="checkbox" checked={isChecked.mac} name="mac" onChange={handleCheckboxChange} />
-            <CheckBoxText>Mac</CheckBoxText>
-          </CheckboxLabel>
-          <CheckboxLabel>
-            <CheckboxInput type="checkbox" checked={isChecked.linux} name="linux" onChange={handleCheckboxChange} />
-            <CheckBoxText>Linux</CheckBoxText>
-          </CheckboxLabel>
-        </DropdownContent>
-      )}
+      <DropdownContent className='content-container'>
+        <CheckboxLabel>
+          <CheckboxInput type="checkbox" name="all" checked={checkedTypes.length === 3} onChange={handleCheckboxChange} />
+          <CheckBoxText>All</CheckBoxText>
+        </CheckboxLabel>
+        <CheckboxLabel>
+          <CheckboxInput type="checkbox" checked={isChecked.windows} name="windows" onChange={handleCheckboxChange} />
+          <CheckBoxText>Windows</CheckBoxText>
+        </CheckboxLabel>
+        <CheckboxLabel>
+          <CheckboxInput type="checkbox" checked={isChecked.mac} name="mac" onChange={handleCheckboxChange} />
+          <CheckBoxText>Mac</CheckBoxText>
+        </CheckboxLabel>
+        <CheckboxLabel>
+          <CheckboxInput type="checkbox" checked={isChecked.linux} name="linux" onChange={handleCheckboxChange} />
+          <CheckBoxText>Linux</CheckBoxText>
+        </CheckboxLabel>
+      </DropdownContent>
     </DropdownContainer>
   );
 };

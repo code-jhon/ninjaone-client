@@ -24,21 +24,16 @@ const SearchIcon = styled.img`
 `;
 
 const Search: React.FC = () => {
-  const [search, setSearch] = useState('');
-  const { setSearchTerm } = useContext(DeviceContext);
+  const { searchTerm, setSearchTerm } = useContext(DeviceContext);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
+    setSearchTerm(event.target.value);
   }
-
-  useEffect(() => {
-    setSearchTerm(search);
-  }, [search, setSearchTerm]);
 
   return (
     <SearchContainer>
       <SearchIcon src={IconSearch} />
-      <SearchInput type="text" placeholder="Search" onChange={handleSearch} value={search} />
+      <SearchInput type="text" placeholder="Search" onChange={handleSearch} value={searchTerm} />
     </SearchContainer>
   );
 };

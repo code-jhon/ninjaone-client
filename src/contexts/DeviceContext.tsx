@@ -7,9 +7,13 @@ const initialState: Device[] = [];
 interface DeviceContextType {
   devices: Device[];
   dispatch: React.Dispatch<Action>;
+  searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  filterType: string[];
   setFilterType: React.Dispatch<React.SetStateAction<string[]>>;
+  sortOption: { key: 'hdd_capacity' | 'system_name'; order: 'asc' | 'desc' } | null;
   setSortOption: React.Dispatch<React.SetStateAction<{ key: 'hdd_capacity' | 'system_name'; order: 'asc' | 'desc' } | null>>;
+  resetFilters: () => void;
 }
 
 // Define the available actions for the reducer
@@ -38,16 +42,20 @@ const reducer = (state: Device[], action: Action): Device[] => {
 const DeviceContext = createContext<DeviceContextType>({
   devices: [],
   dispatch: () => undefined,
+  searchTerm: '',
   setSearchTerm: () => undefined,
+  filterType: [],
   setFilterType: () => undefined,
+  sortOption: null,
   setSortOption: () => undefined,
+  resetFilters: () => undefined
 });
 
 // Create the device provider component
 const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [devices, dispatch] = useReducer(reducer, initialState);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState<string[]>([]);
+  const [filterType, setFilterType] = useState<string[]>(['WINDOWS', 'MAC', 'LINUX']);
   const [sortOption, setSortOption] = useState<{ key: 'hdd_capacity' | 'system_name'; order: 'asc' | 'desc' } | null>(null);
   const [filteredDevices, setFilteredDevices] = useState(devices);
 
@@ -90,8 +98,26 @@ const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
     setFilteredDevices(result);
   }, [devices, searchTerm, filterType, sortOption]);
 
+  const resetFilters = () => {
+    setSearchTerm('');
+    setFilterType(['WINDOWS', 'MAC', 'LINUX']);
+    setSortOption(null);
+  };
+
+  const ProviderObj = {
+    devices: filteredDevices,
+    dispatch,
+    searchTerm,
+    setSearchTerm,
+    filterType,
+    setFilterType,
+    sortOption,
+    setSortOption,
+    resetFilters
+  }
+
   return (
-    <DeviceContext.Provider value={{ devices: filteredDevices, dispatch, setSearchTerm, setFilterType, setSortOption }}>
+    <DeviceContext.Provider value={{ ...ProviderObj }}>
       {children}
     </DeviceContext.Provider>
   );
