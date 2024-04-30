@@ -25,9 +25,11 @@ Plus
 - [x] Context Api
 - [x] Documentation using Jam.dev
 - [x] Multiple types filtering
-- [ ] Unit testing
+- [x] Unit testing
 
 To Improve:
+- [ ] Add more unit tests
+- [ ] Implement env vars and CONSTANTS
 - [ ] Separate the styles into a separate files
 - [ ] Add a loading spinner
 - [ ] Add a confirmation dialogs after complete an action
