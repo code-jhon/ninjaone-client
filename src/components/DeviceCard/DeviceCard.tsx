@@ -85,7 +85,7 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
           <DeviceTitle>{title}</DeviceTitle>
         </DeviceCardHeader>
         <div>
-          <OsDesc>
+          <OsDesc data-testid="OSDesc">
             {osDescCapitalized} workstation - {hddSize} GB
           </OsDesc>
         </div>
